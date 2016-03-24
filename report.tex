@@ -1,0 +1,125 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if 
+                                                          % you want to use the \thanks command
+
+\overrideIEEEmargins                                      % Needed to meet printer requirements.
+
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+% The following packages can be found on http:\\www.ctan.org
+\usepackage{graphicx} % for pdf, bitmapped graphics files
+%\usepackage{epsfig} % for postscript graphics files
+%\usepackage{mathptmx} % assumes new font selection scheme installed
+%\usepackage{times} % assumes new font selection scheme installed
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+
+\title{\LARGE \bf
+Proposal for Analysis of Security In a Modern Processor
+}
+
+
+\author{Justin Cox and Tyler Travis
+\\ \small{Department of Electrical and Computer Engineering}
+\\ \small{Utah State University}
+\\ \small{Logan, Utah 84322}
+\\ \small{email: justin.n.cox@gmail.com, tyler.travis@aggiemail.usu.edu}
+}
+
+
+\begin{document}
+
+
+
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{abstract}
+
+Hardware security is an ever increasing area of study since exploits have been found on computer systems. People are able to look at the memory of a system to see what is processing. This paper proposes adding an extra level of security between the memory and the pipeline. This layer would encrypt data headed to memory and decrypt the data headed to the pipeline making the data held in memory incomprehensible to the attacker. To make the added cryptographic system more secure, research will be done on the benefits of utilizing a Physically Unclonable Function (PUF). Further analysis will be done on how this will affect the processors performance.
+
+\emph{Index Terms}---encryption, decryption, security, pipeline, PUF.
+
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{INTRODUCTION}
+
+Over the years, there have been many advancements made to computer architecture. These advancements have been primarily focused on improving performance and power consumption. As a result, the security of these architectures has been neglected. Malicious attacks on computer systems are becoming more common and as a result there is greater need for more secure systems.
+
+The optimal solution to this problem is to completely redevelop the architectures with security as a top priority. However this option is not very practical as it would be far too expensive to replace the current processors and there is a need to support legacy machines. Therefore, we propose to create security modules that can be added to current processor architecture.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{OBJECTIVE}
+
+The objective of this project is to implement a more secure version of current processor architecture. The goal is to provided the maximum amount of security while maintaining performance at a reasonable level for the CPU.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{METHODOLOGY}
+
+The following subsections will describe how this project will fulfill the objective. The first subsection will describe how the data will be protected by cryptography. The next section will describe how the cyptograhic modules will be improved using a PUF. The last subsection will outline the methods used to measure the performance of the proposed system.
+
+\subsection{Encryption and Decryption of Data}
+
+The memory can be modified by an attacker and as a result the attacker is able to change the execution flow of a program. Therefore to prevent the attacker from knowing where to modify the data, it is important for the CPU to encrpyt data being stored into memory. Initially, we will encrypt memory that is stored in registers, cache, RAM, and virtual memory [1]. If the performance decreases significantly, encryption will be exclude from the registers and/or cache. Assuming the pipeline is trusted, data being pushed into the pipeline will be decrypted.
+
+These encryption and decryption modules will be built and added into gem5.
+
+\subsection{Physically Unclonable Function (PUF)}
+
+A PUF is used to generate secrets extracted from a physical device due to manufacturing differences. This uniqueness can be used for more secure key generation for encryption/decryption [2]. Since the PUF output is generated by a physical device, a predetermined secret will be used to simulate the PUF output. 
+
+\subsection{Benchmarking and Performance}
+
+The simulator that this project will use is gem5. The security modules will be added on to several different processor benchmarks found in gem5. A chosen application will be run on all benchmarks without the added security modules and again with the added security modules. The performance will be compared between the results.
+
+
+\addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section*{ACKNOWLEDGMENT}
+
+%The author would like to thank his instructor Dr. Rajnikant Sharma %for his help in understanding control concepts.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\begin{thebibliography}{99}
+
+\bibitem{c1} G. Edward Suh, C. W. O'Donnel, I. Sachdev, and S Devadas. Design and Implementation of the AEGIS Single-Chip Secure Processor Using Physical Random Functions. \emph{Proceedings of the 32nd annual international symposium on Computer Architecture}, 2005.
+\bibitem{c2} M. Deutschman, "Cryptographic Applications with Physically Unclonable Functions," M.S. Thesis, Inst. Mathematics, Alpen-Adria-Universit\"{a}t Klagenfurt, Klagenfurt, Austria, 2010.
+ 
+
+\end{thebibliography}
+
+\end{document}
