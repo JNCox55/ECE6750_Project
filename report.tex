@@ -47,7 +47,7 @@ Proposal for Analysis of Security In a Modern Processor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Hardware security is an ever increasing area of study since exploits have been found on computer systems. People are able to look at the memory of a system to see what is processing. This paper proposes adding an extra level of security between the memory and the pipeline. This layer would encrypt data headed to memory and decrypt the data headed to the pipeline making the data held in memory incomprehensible to the attacker. To make the added cryptographic system more secure, research will be done on the benefits of utilizing a Physically Unclonable Function (PUF). Further analysis will be done on how this will affect the processors performance.
+Hardware security is an ever increasing area of study since exploits have been found on computer systems. It has been found that attackers are able to look at the memory of a system to see what is being processed. This paper proposes adding an extra level of security between the memory and the pipeline. This layer of security would encrypt data headed to memory and decrypt the data headed to the pipeline making the data held in memory incomprehensible to an attacker. To make the added cryptographic system more secure, research will be done on the benefits of utilizing a Physically Unclonable Function (PUF). Further analysis will be done on how this will affect the processor's performance.
 
 \emph{Index Terms}---encryption, decryption, security, pipeline, PUF.
 
@@ -56,33 +56,49 @@ Hardware security is an ever increasing area of study since exploits have been f
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 
-Over the years, there have been many advancements made to computer architecture. These advancements have been primarily focused on improving performance and power consumption. As a result, the security of these architectures has been neglected. Malicious attacks on computer systems are becoming more common and as a result there is greater need for more secure systems.
+Over the years, there have been many advancements made to computer systems and architecture. These advancements have been primarily focused on improving performance and power consumption. As a result, the security of these architectures has been neglected. Malicious attacks on computer systems are becoming more common and as a result, there is greater need for more secure systems.
 
 The optimal solution to this problem is to completely redevelop the architectures with security as a top priority. However this option is not very practical as it would be far too expensive to replace the current processors and there is a need to support legacy machines. Therefore, we propose to create security modules that can be added to current processor architecture.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{OBJECTIVE}
-
-The objective of this project is to implement a more secure version of current processor architecture. The goal is to provided the maximum amount of security while maintaining performance at a reasonable level for the CPU.
+This paper shows the authors' process of developing a DES cryptography module designed to be inserted into the gem5 simulation software.  The paper also shows how a PUF can be used to increase the security of the DES module.  The results of the architecture's performance with the added security module will be simulated and the results will be given. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{METHODOLOGY}
+\section{BACKGROUND}
 
-The following subsections will describe how this project will fulfill the objective. The first subsection will describe how the data will be protected by cryptography. The next section will describe how the cyptograhic modules will be improved using a PUF. The last subsection will outline the methods used to measure the performance of the proposed system.
+Computer security is becoming more important as more systems and devices are being compromised.  In particular, there has been an increased number of attacks focused on stealing information stored in memory on computers and servers.  This information can be encrypted when not in use, but currently there are very few solutions that allow the computer architecture to work with the encrypted data.  As a result, when the architecture is running, the data stored in memory is vulnerable to attackers.
+
+Previous research has been done on the development and implementation of secure processors [1].  Similar to the previous research done, this paper will focus on data encryption and decryption and the toll it takes on processor performance.  The objective is to provide as much security as possible without reducing the performance heavily.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{TECHNIQUE}
+
+The following subsections will describe the techniques used to supply current computer architecture with more data security. The first subsection will describe how the data will be protected by cryptography. The last section will describe how the cyptograhic modules will be improved using a PUF.
 
 \subsection{Encryption and Decryption of Data}
 
-The memory can be modified by an attacker and as a result the attacker is able to change the execution flow of a program. Therefore to prevent the attacker from knowing where to modify the data, it is important for the CPU to encrpyt data being stored into memory. Initially, we will encrypt memory that is stored in registers, cache, RAM, and virtual memory [1]. If the performance decreases significantly, encryption will be exclude from the registers and/or cache. Assuming the pipeline is trusted, data being pushed into the pipeline will be decrypted.
+The memory can be modified by an attacker and as a result the attacker is able to change the execution flow of a program.  Since the data is not encrypted, the attacker is also able to steal important information that may be contained in memory. Therefore to prevent the attacker from knowing where to modify or read the data, it is important for the CPU to encrpyt data being stored into memory. Initially, we will encrypt memory that is stored in registers, cache, RAM, and virtual memory [1]. If the performance decreases significantly, encryption will be excluded from the registers and/or cache. Assuming the pipeline is trusted, data being pushed into the pipeline will be decrypted.
 
-These encryption and decryption modules will be built and added into gem5.
+These encryption and decryption modules will be built and inserted into the gem5 source code.
+
+\subsection{Data Encryption Standard (DES)}
+
+The type of encryption used for the module will be DES.  Although DES is not the current encryption standard and is not as secure as the Advanced Encryption Standard AES, DES will allow better processor performance while still making the data more secure.
+
+A brief overview of DES will be given so that the reader has a better understanding of how encryption could take a toll on processor performance.  If the reader would like an in-depth understanding of DES, it is recommended that the reader look to other sources.
+
+
 
 \subsection{Physically Unclonable Function (PUF)}
 
 A PUF is used to generate secrets extracted from a physical device due to manufacturing differences. This uniqueness can be used for more secure key generation for encryption/decryption [2]. Since the PUF output is generated by a physical device, a predetermined secret will be used to simulate the PUF output. 
 
+\section{METHODOLOGY}
+
 \subsection{Benchmarking and Performance}
 
 The simulator that this project will use is gem5. The security modules will be added on to several different processor benchmarks found in gem5. A chosen application will be run on all benchmarks without the added security modules and again with the added security modules. The performance will be compared between the results.
+
+\section{PROGRESS MADE}
 
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
