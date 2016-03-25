@@ -94,6 +94,13 @@ The DES algorithm takes a 64-bit plain text input.  It is then run through an in
     \caption{An illustration of the sixteen round DES algorithm.}
 \end{figure}
 
+During each round, the left 32-bit halve is XORed with the sub key corresponding to the current round as well as the output of the F-function.  The inside functionality of the F-function is illustrated in Figure 2. The output of the XOR is used as the next round's right halve and the next round's left halve is the previous round's right halve.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.50]{Ffunction}
+    \caption{An illustration of the F-function}
+\end{figure}
 
 
 \subsection{Physically Unclonable Function (PUF)}
