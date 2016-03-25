@@ -21,6 +21,7 @@
 %\usepackage{times} % assumes new font selection scheme installed
 \usepackage{amsmath} % assumes amsmath package installed
 \usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{multicol}
 
 \title{\LARGE \bf
 Proposal for Analysis of Security In a Modern Processor
@@ -104,12 +105,31 @@ A PUF is used to generate secrets extracted from a physical device due to manufa
 
 \subsection{Benchmarking and Performance}
 
-The simulator that this project will use is gem5. The security modules will be added on to several different processor benchmarks found in gem5. A chosen application will be run on all benchmarks without the added security modules and again with the added security modules. The performance will be compared between the results.
+The simulator that this project will use is gem5. The security modules will be added on to several different processor benchmarks found in gem5. A chosen application will be run on all benchmarks without the added security modules and again with the added security modules. The performance will be compared between the results. The gem5 simulator will be ran with using the out of order model, or O3. Some of the benchmarks the team are looking at running are:
+
+\begin{multicols}{2}
+\begin{itemize}
+\item bzip2
+\item gcc
+\item bwaves
+\item mcf
+\item gobmk
+\item hmmer
+\item GemsFDTD
+\item libquantum
+\item tonto
+\item omnetpp
+\end{itemize}
+\end{multicols}
 
 \section{PROGRESS MADE}
 
-Over the last few weeks, the team has been working on a DES implementation in C++. The program is able to encrypt and decrypt data in blocks of 16 bytes. The team has started looking into where to put the module inside the gem5 simulation source. 
+Over the last few weeks, the team has been working on a DES implementation in C++. The program is able to encrypt and decrypt data in blocks of 16 bytes. Current bottlenecks that the team is facing is how to implement the DES mdoule into the gem5 source code. In the initial design, the DES module will have an interface between the registers, caches, RAM, and disk and the CPU. Finding these locations and directing their output to the DES module and sending the data to the right location will be a challenge. 
 
+The next area the team needs to work on is implementation of a pseudo-PUF for secret key generation. Since a PUF is based on physical imperfections at a silicon level, this can't really be modeled in software. The team needs to either build a database of sampled PUF outputs to simulate a PUF, or settle with a pseudo random number generator. Since this is only a proof of concept project, the actual security of this device is negilible. Next, the team needs to find a way to put
+this together with the gem5 simulator. 
+
+In the future, the team may decide to use different CPU models to see how the DES module effects the overall performance. Some ideas the team had are multi-core and in-order CPU models. 
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
