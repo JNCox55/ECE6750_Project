@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.14)  24 MAR 2016 16:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.14)  24 MAR 2016 18:27
 entering extended mode
 **report.tex
 (report.tex
@@ -231,6 +231,16 @@ LaTeX Font Info:    ... okay on input line 38.
 
 
 ]
+<DesRounds.png, id=9, 493.0922pt x 483.30562pt>
+File: DesRounds.png Graphic file (type png)
+ <use DesRounds.png>
+Package pdftex.def Info: DesRounds.png used on input line 93.
+(pdftex.def)             Requested size: 246.54549pt x 241.65222pt.
+
+Overfull \hbox (0.82738pt too wide) in paragraph at lines 93--94
+ [][] 
+ []
+
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -244,23 +254,23 @@ Before submitting the final camera ready copy, remember to:
 
 [2
 
-] (report.aux) ) 
+ <./DesRounds.png>] (report.aux) ) 
 Here is how much of TeX's memory you used:
- 2550 strings out of 493698
- 34690 string characters out of 3144408
+ 2557 strings out of 493698
+ 34784 string characters out of 3144408
  97618 words of memory out of 3000000
- 5893 multiletter control sequences out of 15000+200000
+ 5898 multiletter control sequences out of 15000+200000
  35250 words of font info for 64 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  27i,8n,26p,711b,293s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}<C
-:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/M
-iKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/u
-tmri8a.pfb>
-Output written on report.pdf (2 pages, 60772 bytes).
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/
+fontname/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/urw/times/utmri8a.pfb>
+Output written on report.pdf (2 pages, 76303 bytes).
 PDF statistics:
- 26 PDF objects out of 1000 (max. 8388607)
+ 29 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -86,6 +86,14 @@ The type of encryption used for the module will be DES.  Although DES is not the
 
 A brief overview of DES will be given so that the reader has a better understanding of how encryption could take a toll on processor performance.  If the reader would like an in-depth understanding of DES, it is recommended that the reader look to other sources.
 
+The DES algorithm takes a 64-bit plain text input.  It is then run through an initial permutation that outputs 56-bits when are then split into two halves.  The data goes through sixteen rounds that each have a sub-key that is generated for each round based on the original 64-bit DES key.  After the sixteenth round, the output is run through a finial permutation and the algorithm outputs a 64-bit encrypted cipher text.  The rounds are illustrated in Figure 1.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.50]{DesRounds}
+    \caption{An illustration of the sixteen round DES algorithm.}
+\end{figure}
+
 
 
 \subsection{Physically Unclonable Function (PUF)}
