@@ -9,3 +9,4 @@ des: des.c des.h
 
 clean:
 	rm DES
+	rm *.o
