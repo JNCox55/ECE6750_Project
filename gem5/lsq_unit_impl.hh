@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2012 ARM Limited
+ * Copyright (c) 2010-2011 ARM Limited
  * All rights reserved
  *
  * The license below extends only to copyright in the software and shall
@@ -66,9 +66,9 @@ template<class Impl>
 void
 LSQUnit<Impl>::WritebackEvent::process()
 {
-    assert(!lsqPtr->cpu->switchedOut());
-
-    lsqPtr->writeback(inst, pkt);
+    if (!lsqPtr->isSwitchedOut()) {
+        lsqPtr->writeback(inst, pkt);
+    }
 
     if (pkt->senderState)
         delete pkt->senderState;
@@ -102,8 +102,7 @@ LSQUnit<Impl>::completeDataAccess(PacketPtr pkt)
         return;
     }
 
-    assert(!cpu->switchedOut());
-    if (inst->isSquashed()) {
+    if (isSwitchedOut() || inst->isSquashed()) {
         iewStage->decrWb(inst->seqNum);
     } else {
         if (!state->noWB) {
@@ -148,6 +147,10 @@ LSQUnit<Impl>::init(O3CPU *cpu_ptr, IEW *iew_ptr, DerivO3CPUParams *params,
 
     DPRINTF(LSQUnit, "Creating LSQUnit%i object.\n",id);
 
+    switchedOut = false;
+
+    cacheBlockMask = 0;
+
     lsq = lsq_ptr;
 
     lsqID = id;
@@ -161,35 +164,19 @@ LSQUnit<Impl>::init(O3CPU *cpu_ptr, IEW *iew_ptr, DerivO3CPUParams *params,
 
     depCheckShift = params->LSQDepCheckShift;
     checkLoads = params->LSQCheckLoads;
-    cachePorts = params->cachePorts;
-    needsTSO = params->needsTSO;
-
-    resetState();
-}
-
-
-template<class Impl>
-void
-LSQUnit<Impl>::resetState()
-{
-    loads = stores = storesToWB = 0;
 
     loadHead = loadTail = 0;
 
     storeHead = storeWBIdx = storeTail = 0;
 
     usedPorts = 0;
+    cachePorts = params->cachePorts;
 
     retryPkt = NULL;
     memDepViolator = NULL;
 
     blockedLoadSeqNum = 0;
-
-    stalled = false;
-    isLoadBlocked = false;
-    loadBlockedHandled = false;
-
-    cacheBlockMask = 0;
+    needsTSO = params->needsTSO;
 }
 
 template<class Impl>
@@ -271,20 +258,40 @@ LSQUnit<Impl>::clearSQ()
 
 template<class Impl>
 void
-LSQUnit<Impl>::drainSanityCheck() const
+LSQUnit<Impl>::switchOut()
 {
-    for (int i = 0; i < loadQueue.size(); ++i)
+    switchedOut = true;
+    for (int i = 0; i < loadQueue.size(); ++i) {
         assert(!loadQueue[i]);
+        loadQueue[i] = NULL;
+    }
 
     assert(storesToWB == 0);
-    assert(!retryPkt);
 }
 
 template<class Impl>
 void
 LSQUnit<Impl>::takeOverFrom()
 {
-    resetState();
+    switchedOut = false;
+    loads = stores = storesToWB = 0;
+
+    loadHead = loadTail = 0;
+
+    storeHead = storeWBIdx = storeTail = 0;
+
+    usedPorts = 0;
+
+    memDepViolator = NULL;
+
+    blockedLoadSeqNum = 0;
+
+    stalled = false;
+    isLoadBlocked = false;
+    loadBlockedHandled = false;
+
+    // Just incase the memory system changed out from under us
+    cacheBlockMask = 0;
 }
 
 template<class Impl>
@@ -426,18 +433,6 @@ LSQUnit<Impl>::checkSnoop(PacketPtr pkt)
         assert(bs != 0);
 
         cacheBlockMask = ~(bs - 1);
-    }
-
-    // Unlock the cpu-local monitor when the CPU sees a snoop to a locked
-    // address. The CPU can speculatively execute a LL operation after a pending
-    // SC operation in the pipeline and that can make the cache monitor the CPU
-    // is connected to valid while it really shouldn't be.
-    for (int x = 0; x < cpu->numActiveThreads(); x++) {
-        ThreadContext *tc = cpu->getContext(x);
-        bool no_squash = cpu->thread[x]->noSquashFromTC;
-        cpu->thread[x]->noSquashFromTC = true;
-        TheISA::handleLockedSnoop(tc, pkt, cacheBlockMask);
-        cpu->thread[x]->noSquashFromTC = no_squash;
     }
 
     // If this is the only load in the LSQ we don't care
@@ -736,6 +731,15 @@ template <class Impl>
 void
 LSQUnit<Impl>::writebackStores()
 {
+     //#################### ADDED CODE ####################
+        uint8_t plainText[8] = {0x05, 0x0A, 0x05, 0x0A, 0x05, 0x0A, 0x05, 0x0A};
+        uint16_t enSize = 8;
+        uint8_t cipherText[8] = {0};
+        uint8_t enKey[8] = {0x12, 0x34, 0x56, 0x78, 0x87, 0x65, 0x43, 0x21};
+
+    //####################            ####################
+
+
     // First writeback the second packet from any split store that didn't
     // complete last cycle because there weren't enough cache ports available.
     if (TheISA::HasUnalignedMemAcc) {
@@ -829,6 +833,20 @@ LSQUnit<Impl>::writebackStores()
             delete req;
             req = sreqLow;
         }
+
+     //#################### ADDED CODE ####################
+
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+	encrypt(plainText, enSize, cipherText, enKey);
+
+     //####################            ####################
+
 
         DPRINTF(LSQUnit, "D-Cache: Writing back store idx:%i PC:%s "
                 "to Addr:%#x, data:%#x [sn:%lli]\n",
@@ -1221,7 +1239,7 @@ LSQUnit<Impl>::recvRetry()
 
 template <class Impl>
 inline void
-LSQUnit<Impl>::incrStIdx(int &store_idx) const
+LSQUnit<Impl>::incrStIdx(int &store_idx)
 {
     if (++store_idx >= SQEntries)
         store_idx = 0;
@@ -1229,7 +1247,7 @@ LSQUnit<Impl>::incrStIdx(int &store_idx) const
 
 template <class Impl>
 inline void
-LSQUnit<Impl>::decrStIdx(int &store_idx) const
+LSQUnit<Impl>::decrStIdx(int &store_idx)
 {
     if (--store_idx < 0)
         store_idx += SQEntries;
@@ -1237,7 +1255,7 @@ LSQUnit<Impl>::decrStIdx(int &store_idx) const
 
 template <class Impl>
 inline void
-LSQUnit<Impl>::incrLdIdx(int &load_idx) const
+LSQUnit<Impl>::incrLdIdx(int &load_idx)
 {
     if (++load_idx >= LQEntries)
         load_idx = 0;
@@ -1245,7 +1263,7 @@ LSQUnit<Impl>::incrLdIdx(int &load_idx) const
 
 template <class Impl>
 inline void
-LSQUnit<Impl>::decrLdIdx(int &load_idx) const
+LSQUnit<Impl>::decrLdIdx(int &load_idx)
 {
     if (--load_idx < 0)
         load_idx += LQEntries;
@@ -1253,7 +1271,7 @@ LSQUnit<Impl>::decrLdIdx(int &load_idx) const
 
 template <class Impl>
 void
-LSQUnit<Impl>::dumpInsts() const
+LSQUnit<Impl>::dumpInsts()
 {
     cprintf("Load store queue: Dumping instructions.\n");
     cprintf("Load queue size: %i\n", loads);
@@ -1262,12 +1280,10 @@ LSQUnit<Impl>::dumpInsts() const
     int load_idx = loadHead;
 
     while (load_idx != loadTail && loadQueue[load_idx]) {
-        const DynInstPtr &inst(loadQueue[load_idx]);
-        cprintf("%s.[sn:%i] ", inst->pcState(), inst->seqNum);
+        cprintf("%s ", loadQueue[load_idx]->pcState());
 
         incrLdIdx(load_idx);
     }
-    cprintf("\n");
 
     cprintf("Store queue size: %i\n", stores);
     cprintf("Store queue: ");
@@ -1275,8 +1291,7 @@ LSQUnit<Impl>::dumpInsts() const
     int store_idx = storeHead;
 
     while (store_idx != storeTail && storeQueue[store_idx].inst) {
-        const DynInstPtr &inst(storeQueue[store_idx].inst);
-        cprintf("%s.[sn:%i] ", inst->pcState(), inst->seqNum);
+        cprintf("%s ", storeQueue[store_idx].inst->pcState());
 
         incrStIdx(store_idx);
     }

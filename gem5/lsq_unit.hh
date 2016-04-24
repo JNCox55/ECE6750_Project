@@ -1,16 +1,4 @@
 /*
- * Copyright (c) 2012 ARM Limited
- * All rights reserved
- *
- * The license below extends only to copyright in the software and shall
- * not be construed as granting a license to any other intellectual
- * property including but not limited to intellectual property relating
- * to a hardware implementation of the functionality of the software
- * licensed hereunder.  You may use the software subject to the license
- * terms below provided that you ensure that this notice is replicated
- * unmodified and in its entirety in all distributions of the software,
- * modified or unmodified, in source code or in binary form.
- *
  * Copyright (c) 2004-2006 The Regents of The University of Michigan
  * All rights reserved.
  *
@@ -62,6 +50,8 @@
 #include "mem/port.hh"
 #include "sim/fault_fwd.hh"
 
+#include "cpu/o3/des.hh"
+
 struct DerivO3CPUParams;
 
 /**
@@ -103,11 +93,14 @@ class LSQUnit {
     /** Sets the pointer to the dcache port. */
     void setDcachePort(MasterPort *dcache_port);
 
-    /** Perform sanity checks after a drain. */
-    void drainSanityCheck() const;
+    /** Switches out LSQ unit. */
+    void switchOut();
 
     /** Takes over from another CPU's thread. */
     void takeOverFrom();
+
+    /** Returns if the LSQ is switched out. */
+    bool isSwitchedOut() { return switchedOut; }
 
     /** Ticks the LSQ unit, which in this case only resets the number of
      * used cache ports.
@@ -210,20 +203,11 @@ class LSQUnit {
     /** Returns if either the LQ or SQ is full. */
     bool isFull() { return lqFull() || sqFull(); }
 
-    /** Returns if both the LQ and SQ are empty. */
-    bool isEmpty() const { return lqEmpty() && sqEmpty(); }
-
     /** Returns if the LQ is full. */
     bool lqFull() { return loads >= (LQEntries - 1); }
 
     /** Returns if the SQ is full. */
     bool sqFull() { return stores >= (SQEntries - 1); }
-
-    /** Returns if the LQ is empty. */
-    bool lqEmpty() const { return loads == 0; }
-
-    /** Returns if the SQ is empty. */
-    bool sqEmpty() const { return stores == 0; }
 
     /** Returns the number of instructions in the LSQ. */
     unsigned getCount() { return loads + stores; }
@@ -243,9 +227,6 @@ class LSQUnit {
     void recvRetry();
 
   private:
-    /** Reset the LSQ state */
-    void resetState();
-
     /** Writes back the instruction, sending it to IEW. */
     void writeback(DynInstPtr &inst, PacketPtr pkt);
 
@@ -262,17 +243,17 @@ class LSQUnit {
     bool sendStore(PacketPtr data_pkt);
 
     /** Increments the given store index (circular queue). */
-    inline void incrStIdx(int &store_idx) const;
+    inline void incrStIdx(int &store_idx);
     /** Decrements the given store index (circular queue). */
-    inline void decrStIdx(int &store_idx) const;
+    inline void decrStIdx(int &store_idx);
     /** Increments the given load index (circular queue). */
-    inline void incrLdIdx(int &load_idx) const;
+    inline void incrLdIdx(int &load_idx);
     /** Decrements the given load index (circular queue). */
-    inline void decrLdIdx(int &load_idx) const;
+    inline void decrLdIdx(int &load_idx);
 
   public:
     /** Debugging function to dump instructions in the LSQ. */
-    void dumpInsts() const;
+    void dumpInsts();
 
   private:
     /** Pointer to the CPU. */
@@ -441,6 +422,9 @@ class LSQUnit {
     /** The number of used cache ports in this cycle. */
     int usedPorts;
 
+    /** Is the LSQ switched out. */
+    bool switchedOut;
+
     //list<InstSeqNum> mshrSeqNums;
 
     /** Address Mask for a cache block (e.g. ~(cache_block_size-1)) */
@@ -567,6 +551,14 @@ Fault
 LSQUnit<Impl>::read(Request *req, Request *sreqLow, Request *sreqHigh,
                     uint8_t *data, int load_idx)
 {
+    //#################### ADDED CODE ####################
+	uint8_t plainText[8] = {0x05, 0x0A, 0x05, 0x0A, 0x05, 0x0A, 0x05, 0x0A};
+	//uint16_t enSize = 8;
+	uint8_t cipherText[8] = {0};
+	uint8_t enKey[8] = {0x12, 0x34, 0x56, 0x78, 0x87, 0x65, 0x43, 0x21};
+
+    //####################            ####################
+
     DynInstPtr load_inst = loadQueue[load_idx];
 
     assert(load_inst);
@@ -646,6 +638,20 @@ LSQUnit<Impl>::read(Request *req, Request *sreqLow, Request *sreqHigh,
             delete fst_data_pkt;
             delete snd_data_pkt;
         }
+
+   	 //#################### ADDED CODE ####################
+
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+
+   	//####################            ####################
+
         WritebackEvent *wb = new WritebackEvent(load_inst, data_pkt, this);
         cpu->schedule(wb, cpu->clockEdge(delay));
         return NoFault;
@@ -819,6 +825,20 @@ LSQUnit<Impl>::read(Request *req, Request *sreqLow, Request *sreqHigh,
             state->mainPkt = data_pkt;
         }
 
+   	 //#################### ADDED CODE ####################
+
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+    	decrypt(plainText, cipherText, enKey);
+
+   	//####################            ####################
+
+
         if (!dcachePort->sendTimingReq(fst_data_pkt)) {
             // Delete state and data packet because a load retry
             // initiates a pipeline restart; it does not retry.
@@ -896,6 +916,7 @@ LSQUnit<Impl>::read(Request *req, Request *sreqLow, Request *sreqHigh,
         return NoFault;
     }
 
+
     return NoFault;
 }
 
@@ -904,6 +925,7 @@ Fault
 LSQUnit<Impl>::write(Request *req, Request *sreqLow, Request *sreqHigh,
                      uint8_t *data, int store_idx)
 {
+
     assert(storeQueue[store_idx].inst);
 
     DPRINTF(LSQUnit, "Doing write to store idx %i, addr %#x data %#x"
