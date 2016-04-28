@@ -150,7 +150,7 @@ The reason \emph{$\mu$intra} is important is because in a encryption/decryption 
    \caption{Flow chart of the secret key generation process.}
 \end{figure}
 
-To fix this, majority voting may be used to determine what bits of the response output typically change given the same challenge input.  This process is explained in detail in [5], but a brief overview of the process will be given.  A chosen challenge message is sent through the PUF multiple times.  It is then determined which bits have a tendency to change.  These bits are thrown out and the new challenge message is sent in the ECC.  The ECC encoding process will return parity bits associated with the certain challenge message.  During normal operation, these parity bits can be used to fix the response output for a given challenge.  This process makes sure that the secret key remains the same for a given challenge.
+To fix this, majority voting may be used to determine what bits of the response output typically change given the same challenge input.  This process is explained in detail in [4], but a brief overview of the process will be given.  A chosen challenge message is sent through the PUF multiple times.  It is then determined which bits have a tendency to change.  These bits are thrown out and the new challenge message is sent in the ECC.  The ECC encoding process will return parity bits associated with the certain challenge message.  During normal operation, these parity bits can be used to fix the response output for a given challenge.  This process makes sure that the secret key remains the same for a given challenge.
 
 As shown in Figure 3, it is also a good idea to hash the output from the ECC to inhibit the attacker from knowing the response message.  The design can be made even more secure by adding a hash function to the challenge input as well.  
 
@@ -160,7 +160,7 @@ Although secret key generation using a PUF is a good way to increase the securit
 
 Another problem that may be introduced is the ability to keep track of the different challenge/response pairs used in the security module.  There are two options available.  One option is to only use one challenge/response pair.  Although this facilitates keeping track of the challenge/response pair, it makes the security module less secure.  If an attacker was able to guess or intercept the response, the system would be compromised.  The other option is to change the challenge/response pair every now and then.  While increasing security, it creates the necessity to keep track of which data corresponds to which challenge/response pair.  This record keeping could become very complex as some of the encrypted data on the system could not be used for a very long time.
 
-This paper will not go over the solutions to these problems, but research has been done to overcome these problems [6].  
+This paper will not go over the solutions to these problems, but research has been done to overcome these problems [5].  
 
 \section{METHODOLOGY}
 
@@ -262,7 +262,10 @@ Another improvement that can be done to the current security module is to optimi
 \begin{thebibliography}{99}
 
 \bibitem{c1} G. Edward Suh, C. W. O'Donnel, I. Sachdev, and S Devadas. Design and Implementation of the AEGIS Single-Chip Secure Processor Using Physical Random Functions. \emph{Proceedings of the 32nd annual international symposium on Computer Architecture}, 2005.
-\bibitem{c2} M. Deutschman, "Cryptographic Applications with Physically Unclonable Functions," M.S. Thesis, Inst. Mathematics, Alpen-Adria-Universit\"{a}t Klagenfurt, Klagenfurt, Austria, 2010.
+\bibitem{c2} J. Orlin Grabbe. The DES Algorithm Illustrated. \emph{Laissez Faire City Times}, 2006.
+\bibitem{c3} A. Sadeghi and C. Wachsmann, "Physically Unclonable Functions: A New Generation of Security Hardware", Technische Universitat Darmstadt, 2012.
+\bibitem{c4} M. Deutschman, "Cryptographic Applications with Physically Unclonable Functions," M.S. Thesis, Inst. Mathematics, Alpen-Adria-Universit\"{a}t Klagenfurt, Klagenfurt, Austria, 2010.
+\bibitem{c5} C. Böhm, M. Hofer and W. Pribyl, "A Microcontroller SRAM-PUF", Institute for Electronics Graz University of Technology, 2011.
  
 \end{thebibliography}
 
