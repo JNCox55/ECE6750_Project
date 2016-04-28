@@ -2,7 +2,7 @@
 %2345678901234567890123456789012345678901234567890123456789012345678901234567890
 %        1         2         3         4         5         6         7         8
 
-\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
+\documentclass[letterpaper, 10pt, conference]{ieeeconf}  % Comment this line out if you need a4paper
 
 %\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
 
@@ -201,7 +201,7 @@ The functions take a 64-bit plaintext array and a 64-bit key array.  Since DES w
 
 The authors began looking into the source code that handles load and store instructions.  The encryption function needs to be called every time a store instruction is executed.  The decryption function needs to be called every time a load instruction is executed.
 
-After going up the hierarchy in the code, the authors were able to determine that gem5 uses a packet class to be allow the CPU to communicate with the memory.  These packets will be used to encrypt and decrypt the data.  Figure 4 illustrates how the packets are used to encrypt the memory system.  It should be noted that the registers are not encrypted.  This presents a potential security flaw in the system because if an attacker gains control of program flow, he may be able to obtain important information stored in registers.  In a future revision of this project, the authors would like to encrypt the registers as well.
+After going up the hierarchy in the code, the authors were able to determine that gem5 uses a packet class to allow the CPU to communicate with the memory.  These packets will be used to encrypt and decrypt the data.  Figure 4 illustrates how the packets are used to encrypt the memory system.  It should be noted that the registers are not encrypted.  This presents a potential security flaw in the system because if an attacker gains control of program flow, he may be able to obtain important information stored in registers.  In a future revision of this project, the authors would like to encrypt the registers as well.
 
 \begin{figure}[thpb]
 	\centering
@@ -285,9 +285,13 @@ After $ED_{L}$ was calculated, it was added to the python configuration script a
 
 This set of graphs show results that are more interesting.  It can be seen that for the majority of benchmarks, the instruction rate per cycle goes down dramatically.  In fact, on some benchmarks it is almost impossible to see the value on the graph because it is so small.
 
-There are two benchmarks that ended up not having a big decrease in instructions per cycle.  These benchmarks are \emph{bwaves} and \emph{libquantum}.  In order to understand why this is, the result text files where analyzed again.  After analyzing the result files, the authors were able to conclude that the \emph{bwaves} and \emph{libquantum} have a lot less memory instructions executed compared to the other benchmarks.  For example \emph{mcf} and \emph{gcc} have $64,884,724$ and $52,280,113$ memory instructions respectively, while \emph{bwaves} and \emph{libquantum} have $28,339,998$ and $33,181,223$ memory instructions respectively.
+There are two benchmarks that ended up not having a big decrease in instructions per cycle.  These benchmarks are \emph{bwaves} and \emph{libquantum}.  In order to understand why this is, the result text files where analyzed again.  After analyzing the result files, the authors were able to conclude that the \emph{bwaves} and \emph{libquantum} have a lot less memory instructions executed compared to the other benchmarks.  For example \emph{mcf} and \emph{gcc} have 64,884,724 and 52,280,113 memory instructions respectively, while \emph{bwaves} and \emph{libquantum} have 28,339,998 and 33,181,223 memory instructions respectively.
 
 These results would also greatly depend on how the memory is referenced.  If a certain benchmark references memory that is required to be accessed from disk instead of the cache, it will also effect the amount of instructions per cycle that is observed in the pipeline.
+
+The results observed match the prediction stated at the beginning of the paper.  The added security module does indeed cause the CPU to have a performance decrease.  It is a little surprising that some of the benchmarks take a very large performance decrease.  This shows that the type of application used greatly determines whether or not the security module is worth it.
+
+It should be noted that the benchmark \emph{bzip2} shows odd behavior in Figures 5, 7, and 9.  The results of this benchmark should be taken lightly until it the odd results have been explained.
 
 
 \section{FUTURE WORK}
@@ -301,8 +305,10 @@ Another improvement that can be done to the current security module is to optimi
 Looking at the results, the performance is nearly half of what the non-modified gem5 simulator produced, sometimes even below 10\% of normal gem5 performance. This definitley brings into question, is a security module like this worth the performance hit? An important consideration for this is the application of the computer in use. Is it going to be handling secure data that can't get into the hands of adversaries while running? Is the person running the computer paranoid about people
 stealing their data? There are many questions to ask here and the added security isn't for every machine, especially one where number crunching is more important than securing the internal data.
 
-During this project, the team learned many new things. Probably the most significant lesson learned was how to use gem5 and its structure for handling data between the pipeline and caches. Specially the team learned the process of how a lead and store instruction are executed in the O3 cpu model. Another thing the team learned during the project is how the gem5 simulator counted its IPCs. It isn't dependent on the running time of the simulator but in line with the internal tick counter for
+During this project, the team learned many new things. Probably the most significant lesson learned was how to use gem5 and its structure for handling data between the pipeline and caches. In particular, the team learned the process of how a load and store instruction are executed in the O3 cpu model. Another thing the team learned during the project is how the gem5 simulator calculated its IPCs. It isn't dependent on the running time of the simulator but in line with the internal tick counter for
 the clock. The latency for each hit in the cache is more important to the final IPC count for the benchmark.
+
+Whether or not the added security module shown and tested in this paper is the best method to secure modern computer architecture, the security of these systems should definitely be taken seriously.
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
