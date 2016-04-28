@@ -199,7 +199,18 @@ The functions take a 64-bit plaintext array and a 64-bit key array.  Since DES w
 
 \subsection{Modifications Made to gem5 Source Code}
 
+The authors began looking into the source code that handles load and store instructions.  The encryption function needs to be called every time a store instruction is executed.  The decryption function needs to be called every time a load instruction is executed.
 
+After going up the hierarchy in the code, the authors were able to determine that gem5 uses a packet class to be allow the CPU to communicate with the memory.  These packets will be used to encrypt and decrypt the data.  Figure 4 illustrates how the packets are used to encrypt the memory system.  It should be noted that the registers are not encrypted.  This presents a potential security flaw in the system because if an attacker gains control of program flow, he may be able to obtain important information stored in registers.  In a future revision of this project, the authors would like to encrypt the registers as well.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.35]{gem5}
+   \caption{Illustration to show what is being encrypted with the added security module.}
+\end{figure}
+
+The gem5 source files that received modifications are \emph{lsq\_unit.hh} and \emph{lsq\_unit\_impl.hh}.
+  
 
 \subsection{Environment Used to Run Simulation}
 
@@ -211,6 +222,11 @@ Since each benchmark simulation has the potential to require more than an hour t
 
 
 
+\section{FUTURE WORK}
+
+As mentioned in the subsection C of section IV, the CPU registers are currently not being protected with encryption.  Given more time, the authors would like to upgrade the security module to include the register files.  This would be an improvement with regards to security, but it will also affect the performance.  If the encryption and decryption regarding the registers requires too much of a performance hit, it may end up not having an overall improvement.  The  effects of this added security would need to be tested and simulated in a future work.
+
+Another improvement that can be done to the current security module is to optimize the DES source code.  The code was written as a proof of concept, thus it is not optimized to run efficiently.  Based on the results of this paper, the CPU has a performance decrease when the security module is introduced.  In order to mitigate the performance decrease, the code needs to be optimized as much as possible.
 
 \section{CONCLUSION}
 
@@ -248,7 +264,7 @@ Since each benchmark simulation has the potential to require more than an hour t
 \bibitem{c1} G. Edward Suh, C. W. O'Donnel, I. Sachdev, and S Devadas. Design and Implementation of the AEGIS Single-Chip Secure Processor Using Physical Random Functions. \emph{Proceedings of the 32nd annual international symposium on Computer Architecture}, 2005.
 \bibitem{c2} M. Deutschman, "Cryptographic Applications with Physically Unclonable Functions," M.S. Thesis, Inst. Mathematics, Alpen-Adria-Universit\"{a}t Klagenfurt, Klagenfurt, Austria, 2010.
  
-
 \end{thebibliography}
+
 
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.14)  28 APR 2016 11:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2015.12.14)  28 APR 2016 14:49
 entering extended mode
 **report.tex
 (report.tex
@@ -358,6 +358,12 @@ LaTeX Font Info:    Try loading font information for OT1+pcr on input line 192.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\ot1pcr.fd"
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
+<gem5.png, id=21, 700.11563pt x 288.3272pt>
+File: gem5.png Graphic file (type png)
+ <use gem5.png>
+Package pdftex.def Info: gem5.png used on input line 208.
+(pdftex.def)             Requested size: 245.04414pt x 100.91602pt.
+ [3]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -369,26 +375,28 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[3] (report.aux) ) 
+[4
+
+ <./gem5.png>] (report.aux) ) 
 Here is how much of TeX's memory you used:
- 4105 strings out of 493698
- 57600 string characters out of 3144408
- 157776 words of memory out of 3000000
- 7400 multiletter control sequences out of 15000+200000
+ 4111 strings out of 493698
+ 57677 string characters out of 3144408
+ 158776 words of memory out of 3000000
+ 7405 multiletter control sequences out of 15000+200000
  37464 words of font info for 74 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  27i,9n,49p,897b,968s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Prog
-ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
-urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a
-.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program 
-Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (3 pages, 153148 bytes).
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontn
+ame/8r.enc}<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/urw/courier/ucrr8a.pfb><C:/Program Files/MiKTeX 2.9/f
+onts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/ti
+mes/utmbi8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on report.pdf (4 pages, 170813 bytes).
 PDF statistics:
- 52 PDF objects out of 1000 (max. 8388607)
+ 57 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
