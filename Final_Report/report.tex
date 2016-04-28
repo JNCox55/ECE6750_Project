@@ -220,6 +220,74 @@ Since each benchmark simulation has the potential to require more than an hour t
 
 \section{RESULTS}
 
+After the benchmark simulation result files were generated, they were processed and compared.  Figures 5,6,7,8,9, and 10 show the simulation parameters that changed based on pipeline width and non-secured vs secured versions of the gem5 o3 CPU.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{InstructionRate1}
+   \caption{Graph that compares simulator instruction rate for the first set of benchmarks.}
+\end{figure}
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{InstructionRate2}
+   \caption{Graph that compares simulator instruction rate for the second set of benchmarks.}
+\end{figure}
+
+The simulator instruction rate in seconds is shown in Figures 5 and 6.  You can see that we observe the expected result that the pipeline with width 8 performs better than a pipeline with width 2.  However, it should be observed that the benefits of the pipeline width are less prevalent in the encrypted/decrypted CPU.  The main thing to observe from the graphs is that the secured CPU benchmarks have a performance decrease of more than half.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{OperationsRate1}
+   \caption{Graph that compares simulator operation rate for the first set of benchmarks.}
+\end{figure}
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{OperationsRate2}
+   \caption{Graph that compares simulator operation rate for the second set of benchmarks.}
+\end{figure}
+
+The simulator operation rate in seconds is shown in Figures 7 and 8.  The operation rate follows the same patterns as Figures 5 and 6 and there is no need to explain them further.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{SimulationTime1}
+   \caption{Graph that compares simulator run time for the first set of benchmarks.}
+\end{figure}
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{SimulationTime2}
+   \caption{Graph that compares simulator run time for the second set of benchmarks.}
+\end{figure}
+
+The simulator run time in seconds is shown in Figures 9 and 10.  It can be seen that the secured CPU benchmarks take longer to run the simulation.  The simulation time is important because it allows the latency of the encryption/decryption functions to be calculated.  The benchmark simulation results include the number of memory operations executed.  The gem5 o3 CPU is running at 1 GHz so one clock cycle is 1ns.  The equation to solve for the encryption/decryption latency is
+
+$$ ED_{L} = \frac{(t_{N} - t_{S})s \ \displaystyle(\frac{10^{9}ns}{1s})}{\# of MemInst} \eqno{(1)}$$
+
+\noindent
+where $ED_{L}$ is the latency in clock cycles of the encryption/decryption functions and where $t_{N}$ and $t_{S}$ are the simulation time in seconds of the normal CPU and secured CPU, respectively.  The $ED_{L}$ is important because it allows gem5 to include this latency in the Instructions Per Cycle (IPC) calculations.
+
+After $ED_{L}$ was calculated, it was added to the python configuration script and the secure CPU benchmarks were ran again.  The results of the benchmarks are shown in Figures 11 and 12.
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{IPC1}
+   \caption{Graph that compares the instructions per cycle or ipc (values are normalized to max value).}
+\end{figure}
+
+\begin{figure}[thpb]
+	\centering
+	\includegraphics[scale=.45]{IPC2}
+   \caption{Graph that compares the instructions per cycle or ipc (values are normalized to max value).}
+\end{figure}
+
+This set of graphs show results that are more interesting.  It can be seen that for the majority of benchmarks, the instruction rate per cycle goes down dramatically.  In fact, on some benchmarks it is almost impossible to see the value on the graph because it is so small.
+
+There are two benchmarks that ended up not having a big decrease in instructions per cycle.  These benchmarks are \emph{bwaves} and \emph{libquantum}.  In order to understand why this is, the result text files where analyzed again.  After analyzing the result files, the authors were able to conclude that the \emph{bwaves} and \emph{libquantum} have a lot less memory instructions executed compared to the other benchmarks.  For example \emph{mcf} and \emph{gcc} have $64,884,724$ and $52,280,113$ memory instructions respectively, while \emph{bwaves} and \emph{libquantum} have $28,339,998$ and $33,181,223$ memory instructions respectively.
+
+These results would also greatly depend on how the memory is referenced.  If a certain benchmark references memory that is required to be accessed from disk instead of the cache, it will also effect the amount of instructions per cycle that is observed in the pipeline.
 
 
 \section{FUTURE WORK}
